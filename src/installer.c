@@ -124,7 +124,11 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
         size += tmd2->contents[i].size;
 
     if(!checkFreeSpace(toUsb ? getUSB() : NUSDEV_MLC, size))
+    {
+        if(tmd == NULL && tmd2 != NULL)
+            MEMFreeToDefaultHeap(tmd2);
         return !(AppRunning(true));
+    }
 
     // No-intro
     char *tmpPath = getStaticPathBuffer(1);
@@ -142,6 +146,8 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
             const char *err = localise("Error transforming no-image set");
             addToScreenLog("Installation failed!");
             showErrorFrame(err);
+            if(tmd == NULL && tmd2 != NULL)
+                MEMFreeToDefaultHeap(tmd2);
             return false;
         }
     }
@@ -173,7 +179,10 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
                             if(noIntro != NULL)
                                 revertNoIntro(noIntro);
 
-                            return install(game, hasDeps, dev, path, toUsb, keepFiles, tmd2);
+                            bool ret = install(game, hasDeps, dev, path, toUsb, keepFiles, tmd2);
+                            if(tmd == NULL && tmd2 != NULL)
+                                MEMFreeToDefaultHeap(tmd2);
+                            return ret;
                         }
                         else
                             debugPrintf("Error fixing ticket!");
@@ -212,6 +221,8 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
         debugPrintf(toScreen);
         addToScreenLog("Installation failed!");
         showErrorFrame(toScreen);
+        if(tmd == NULL && tmd2 != NULL)
+            MEMFreeToDefaultHeap(tmd2);
         return false;
     }
 
@@ -233,6 +244,8 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
         const char *err = localise(toUsb ? "Error opening USB device" : "Error opening internal memory");
         addToScreenLog("Installation failed!");
         showErrorFrame(err);
+        if(tmd == NULL && tmd2 != NULL)
+            MEMFreeToDefaultHeap(tmd2);
         return false;
     }
 
@@ -257,6 +270,8 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
         addToScreenLog("Installation failed!");
         showErrorFrame(toScreen);
         enableShutdown();
+        if(tmd == NULL && tmd2 != NULL)
+            MEMFreeToDefaultHeap(tmd2);
         return false;
     }
 
@@ -280,6 +295,8 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
                 cleanupCancelledInstallation(dev, path, toUsb, keepFiles);
                 // The fallthrough here is by design, don't listen to the compiler!
             case CUSTOM_MCP_ERROR_EOM:
+                if(tmd == NULL && tmd2 != NULL)
+                    MEMFreeToDefaultHeap(tmd2);
                 return true;
             case 0xFFFCFFE9:
                 if(hasDeps)
@@ -331,6 +348,8 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
 
         addToScreenLog("Installation failed!");
         showErrorFrame(toScreen);
+        if(tmd == NULL && tmd2 != NULL)
+            MEMFreeToDefaultHeap(tmd2);
         return false;
     }
 
@@ -353,6 +372,9 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
             debugPrintf("Couldn't remove installation files from SD card: %s", translateFSErr(ret));
 #endif
     }
+
+    if(tmd == NULL && tmd2 != NULL)
+        MEMFreeToDefaultHeap(tmd2);
 
     return true;
 }

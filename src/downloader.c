@@ -1263,6 +1263,9 @@ RAMBUF *allocRamBuf()
 
 void freeRamBuf(RAMBUF *rambuf)
 {
+    if(rambuf == NULL)
+        return;
+
     if(rambuf->buf != NULL)
         MEMFreeToDefaultHeap(rambuf->buf);
 
