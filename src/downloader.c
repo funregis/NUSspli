@@ -492,27 +492,31 @@ static const char *translateCurlError(CURLcode err, const char *error)
     switch(err)
     {
         case CURLE_COULDNT_RESOLVE_HOST:
-            return "Couldn't resolve hostname";
+            return localise("Couldn't resolve hostname");
         case CURLE_COULDNT_CONNECT:
-            return "Couldn't connect to server";
+            return localise("Couldn't connect to server");
         case CURLE_OPERATION_TIMEDOUT:
-            return "Operation timed out";
+            return localise("Operation timed out");
         case CURLE_GOT_NOTHING:
-            return "The server didn't return any data";
+            return localise("The server didn't return any data");
         case CURLE_SEND_ERROR:
+            return localise("Failed sending data");
         case CURLE_RECV_ERROR:
+            return localise("Failed receiving data");
         case CURLE_PARTIAL_FILE:
-            return "I/O error";
+            return localise("Transferred a partial file");
         case CURLE_PEER_FAILED_VERIFICATION:
-            return "Verification failed";
+            return localise("Verification failed");
         case CURLE_SSL_CONNECT_ERROR:
-            return "Handshake failed";
+            return localise("Handshake failed");
         case CURLE_FAILED_INIT:
+            return localise("Initialization failed");
         case CURLE_READ_ERROR:
+            return localise("Read error");
         case CURLE_OUT_OF_MEMORY:
-            return "Internal error";
+            return localise("Out of memory");
         case CURLE_BAD_FUNCTION_ARGUMENT: // TODO: WUT bug
-            return "Internal WUT error";
+            return localise("Internal WUT error");
         default:
             return error[0] == '\0' ? curl_easy_strerror(err) : error;
     }
@@ -857,18 +861,39 @@ int downloadFile(const char *url, char *file, downloadData *data, FileType type,
                 curlReuseConnection = false;
                 return r;
             case CURLE_COULDNT_RESOLVE_HOST:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("check your DNS and network settings"));
+                break;
             case CURLE_COULDNT_CONNECT:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("check your internet connection and try again"));
+                break;
             case CURLE_OPERATION_TIMEDOUT:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("the operation timed out, please try again"));
+                break;
             case CURLE_GOT_NOTHING:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("the server didn't return any data, please try again"));
+                break;
             case CURLE_SEND_ERROR:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("failed to send data, check the network settings and try again"));
+                break;
             case CURLE_RECV_ERROR:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("failed to receive data, check the network settings and try again"));
+                break;
             case CURLE_PARTIAL_FILE:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Network error"), te, localise("the file transfer was incomplete, please try again"));
+                break;
             case CURLE_BAD_FUNCTION_ARGUMENT: // TODO: WUT bug
-                sprintf(toScreen, "%s:\n\t%s\n\n%s", "Network error", te, ret != CURLE_BAD_FUNCTION_ARGUMENT ? "check the network settings and try again" : "See https://github.com/V10lator/NUSspli/issues/302#issuecomment-2108134284");
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Internal WUT error"), te, "See https://github.com/V10lator/NUSspli/issues/302#issuecomment-2108134284");
                 break;
             case CURLE_PEER_FAILED_VERIFICATION:
+                sprintf(toScreen, "%s:\n\t%s!\n\n%s", localise("SSL error"), te, localise("peer certificate verification failed, check your Wii Us date and time settings"));
+                break;
             case CURLE_SSL_CONNECT_ERROR:
-                sprintf(toScreen, "%s:\n\t%s!\n\n%s", "SSL error", te, "check your Wii Us date and time settings");
+                sprintf(toScreen, "%s:\n\t%s!\n\n%s", localise("SSL error"), te, localise("SSL handshake failed, check your Wii Us date and time settings"));
+                break;
+            case CURLE_FAILED_INIT:
+            case CURLE_READ_ERROR:
+            case CURLE_OUT_OF_MEMORY:
+                sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Internal error"), te, localise("an internal error occurred, please restart the console"));
                 break;
             default:
                 sprintf(toScreen, "%s:\n\t%d %s", te, ret, curlError);
@@ -1055,7 +1080,7 @@ bool downloadTitle(const TMD *tmd, size_t tmdSize, const TitleEntry *titleEntry,
     FSAFileHandle fp = openFile(installDir, "w", tmdSize);
     if(fp == 0)
     {
-        showErrorFrame("Can't save title.tmd file!");
+        showErrorFrame(localise("Can't save title.tmd file!"));
         return false;
     }
 
@@ -1151,7 +1176,7 @@ bool downloadTitle(const TMD *tmd, size_t tmdSize, const TitleEntry *titleEntry,
                 if(fp == 0)
                 {
                     freeRamBuf(tikBuf);
-                    showErrorFrame("Can't save title.tik file!");
+                    showErrorFrame(localise("Can't save title.tik file!"));
                     return false;
                 }
 

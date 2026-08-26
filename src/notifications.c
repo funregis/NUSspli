@@ -91,6 +91,11 @@ bool initNotifications()
     rumbleThread = startThread("NUSspli Rumble", THREAD_PRIORITY_LOW, STACKSIZE_SMALL, rumbleThreadMain, 0, NULL, AFFINITY_CPU12);
     return rumbleThread != NULL;
 }
+void stopNotification()
+{
+    if(getNotificationMethod() & NOTIF_METHOD_LED)
+        ACPTurnOnDrcLed(pId, LED_OFF);
+}
 
 void deinitNotifications()
 {
@@ -117,8 +122,4 @@ void startNotification()
     }
 }
 
-void stopNotification()
-{
-    if(getNotificationMethod() & NOTIF_METHOD_LED)
-        ACPTurnOnDrcLed(pId, LED_OFF);
-}
+
