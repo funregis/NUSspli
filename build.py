@@ -30,6 +30,8 @@ def cDownload(url, file):
         c.setopt(c.FOLLOWLOCATION, True)
         c.setopt(c.USERAGENT, "NUSspliBuilder/2.2")
         c.setopt(c.ACCEPT_ENCODING, "")
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
         c.perform()
         c.close()
 

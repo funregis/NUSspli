@@ -21,6 +21,10 @@
 
 #pragma once
 
+#include <stddef.h>
+#include <stdint.h>
+#include <coreinit/memdefaultheap.h>
+
 //#ifndef FD_SETSIZE
 #define FD_SETSIZE 32
 //#endif
@@ -30,9 +34,13 @@ extern "C"
 {
 #endif
 
-    // // Functions from https://github.com/devkitPro/wut/blob/master/libraries/wutsocket/wut_socket_common.c
+    // Functions from https://github.com/devkitPro/wut/blob/master/libraries/wutsocket/wut_socket_common.c
     void __attribute__((weak)) __init_wut_socket();
     void __attribute__((weak)) __fini_wut_socket();
+
+    void *MEMAllocFromDefaultHeap(size_t size);
+    void *MEMAllocFromDefaultHeapEx(size_t size, int alignment);
+    void MEMFreeToDefaultHeap(void *block);
 
 #ifdef __cplusplus
 }
