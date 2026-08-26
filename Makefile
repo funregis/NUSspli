@@ -35,7 +35,8 @@ INCLUDES	:=	include \
 #-------------------------------------------------------------------------------
 
 CFLAGS		:=	$(MACHDEP) -O3 -pipe \
-				-fno-plt -fno-pic -fno-pie \
+				-mlongcall -ffunction-sections -fdata-sections \
+				-fno-pic -fno-pie \
 				-Wall -Wextra -Wundef -Wshadow -Wpointer-arith \
 				-Wcast-align -Wno-trigraphs -Wno-empty-body \
 				-Wno-maybe-uninitialized -Wno-pointer-sign \
@@ -44,7 +45,7 @@ CFLAGS		:=	$(MACHDEP) -O3 -pipe \
 
 CXXFLAGS	:=	$(CFLAGS) -std=c++20 -fpermissive
 ASFLAGS		:=	-g $(ARCH)
-LDFLAGS		:=	-g $(ARCH) $(RPXSPECS) $(CFLAGS) -Wl,-Map,$(notdir $*.map)
+LDFLAGS		:=	-g $(ARCH) $(RPXSPECS) $(CFLAGS) -Wl,--gc-sections -Wl,-Map,$(notdir $*.map)
 
 LIBS		:=	-lcurl -lnghttp2 -lbrotlidec -lbrotlicommon -lmbedtls -lmbedx509 -lmbedcrypto `$(PREFIX)pkg-config --libs SDL2_mixer SDL2_ttf SDL2_image harfbuzz jansson` -lwut -lmocha -lrpxloader
 
