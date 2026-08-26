@@ -21,6 +21,13 @@
 
 #pragma once
 
+#pragma GCC diagnostic ignored "-Wundef"
+#include <coreinit/core.h>
+#include <coreinit/memdefaultheap.h>
+#include <coreinit/memory.h>
+#include <coreinit/time.h>
+#pragma GCC diagnostic pop
+
 //#ifndef FD_SETSIZE
 #define FD_SETSIZE 32
 //#endif
