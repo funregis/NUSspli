@@ -150,9 +150,9 @@ static void drawPDMenuFrame(const TitleEntry *entry, const char *titleVer, uint6
     strcat(toFrame, " ");
     strcat(toFrame, localise(keepFiles ? "Yes" : "No"));
     if(dlDev == NUSDEV_SD && operation == OPERATION_DOWNLOAD_INSTALL)
-        textToFrame(--line, 4, localise(toFrame));
+        textToFrame(--line, 4, toFrame);
     else
-        textToFrameColored(--line, 4, localise(toFrame), SCREEN_COLOR_WHITE_TRANSP);
+        textToFrameColored(--line, 4, toFrame, SCREEN_COLOR_WHITE_TRANSP);
 
     strcpy(toFrame, localise("Download to:"));
     strcat(toFrame, " ");
@@ -170,7 +170,7 @@ static void drawPDMenuFrame(const TitleEntry *entry, const char *titleVer, uint6
     }
 
     getFreeSpaceString(dlDev, toFrame + strlen(toFrame));
-    textToFrame(--line, 4, localise(toFrame));
+    textToFrame(--line, 4, toFrame);
 
     strcpy(toFrame, localise("Operation:"));
     strcat(toFrame, " ");
@@ -217,7 +217,7 @@ static void *drawPDWrongDeviceFrame(NUSDEV dev)
     strcat(toFrame, " ");
     strcat(toFrame, dev & NUSDEV_USB ? "USB" : "NAND");
     strcat(toFrame, "\n");
-    strcat(toFrame, "Do you want to change the target device to this?");
+    strcat(toFrame, localise("Do you want to change the target device to this?"));
     strcat(toFrame, "\n\n" BUTTON_A " ");
     strcat(toFrame, localise("Yes"));
     strcat(toFrame, " || " BUTTON_B " ");

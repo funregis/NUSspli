@@ -58,7 +58,7 @@ RUN git clone --depth 1 --single-branch https://github.com/google/brotli.git && 
  rm -rf brotli
 
 # Install libCURL since WUT doesn't ship with the latest version
-RUN curl -LO https://curl.se/download/curl-$CURL_VER.tar.xz && \
+RUN curl -kLO https://curl.se/download/curl-$CURL_VER.tar.xz && \
  mkdir /curl && \
  tar xJf curl-$CURL_VER.tar.xz -C /curl --strip-components=1 && \
  cd curl && \
