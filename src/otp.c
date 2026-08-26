@@ -26,9 +26,11 @@
 #include <utils.h>
 
 #pragma GCC diagnostic ignored "-Wundef"
+#include <coreinit/core.h>
 #include <coreinit/memory.h>
 #include <coreinit/time.h>
 #include <mocha/mocha.h>
+
 #pragma GCC diagnostic pop
 
 static uint8_t otp_common_key[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
