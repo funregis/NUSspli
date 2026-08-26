@@ -1,4 +1,4 @@
-﻿diff --git a/SDL_FontCache.h b/SDL_FontCache.h
+diff --git a/SDL_FontCache.h b/SDL_FontCache.h
 index 77f5fb4..c00d85c 100644
 --- a/SDL_FontCache.h
 +++ b/SDL_FontCache.h
