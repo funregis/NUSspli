@@ -56,13 +56,28 @@ static int rumbleThreadMain(int argc, const char **argv)
         OSReceiveMessage(&rumble_queue, &msg, OS_MESSAGE_FLAGS_BLOCKING);
         if(msg.message == NUSSPLI_MESSAGE_NONE)
         {
-            for(WPADChan j = 0; j < 4; ++j)
-                WPADControlMotor(j, 1);
+            NOTIF_METHOD method = getNotificationMethod();
+            if(method & NOTIF_METHOD_RUMBLE)
+            {
+                for(WPADChan j = 0; j < 4; ++j)
+                    WPADControlMotor(j, 1);
+            }
+            if(method & NOTIF_METHOD_LED)
+                ACPTurnOnDrcLed(pId, LED_ON);
 
             OSSleepTicks(OSSecondsToTicks(1));
 
-            for(WPADChan j = 0; j < 4; ++j)
-                WPADControlMotor(j, 0);
+            if(method & NOTIF_METHOD_RUMBLE)
+            {
+                for(WPADChan j = 0; j < 4; ++j)
+                    WPADControlMotor(j, 0);
+            }
+
+            if(method & NOTIF_METHOD_LED)
+            {
+                OSSleepTicks(OSSecondsToTicks(4));
+                ACPTurnOnDrcLed(pId, LED_OFF);
+            }
         }
     } while(msg.message != NUSSPLI_MESSAGE_EXIT);
 
@@ -81,6 +96,7 @@ void deinitNotifications()
 {
     if(rumbleThread != NULL)
     {
+        stopNotification();
         OSMessage msg = { .message = NUSSPLI_MESSAGE_EXIT };
         OSSendMessage(&rumble_queue, &msg, OS_MESSAGE_FLAGS_BLOCKING);
         stopThread(rumbleThread, NULL);
@@ -90,14 +106,15 @@ void deinitNotifications()
 
 void startNotification()
 {
-    if(getNotificationMethod() & NOTIF_METHOD_RUMBLE)
+    NOTIF_METHOD method = getNotificationMethod();
+    if(method & NOTIF_METHOD_RUMBLE)
+        VPADControlMotor(VPAD_CHAN_0, (uint8_t *)pattern, 120);
+
+    if(method != NOTIF_METHOD_NONE)
     {
         OSMessage msg = { .message = NUSSPLI_MESSAGE_NONE };
         OSSendMessage(&rumble_queue, &msg, OS_MESSAGE_FLAGS_NONE);
-        VPADControlMotor(VPAD_CHAN_0, (uint8_t *)pattern, 120);
     }
-    if(getNotificationMethod() & NOTIF_METHOD_LED)
-        ACPTurnOnDrcLed(pId, LED_ON);
 }
 
 void stopNotification()
