@@ -68,7 +68,7 @@ cDownload("https://ccadb.my.salesforce-sites.com/mozilla/IncludedRootsPEMTxt?Tru
 checkAndDeleteDir("NUStmp")
 checkAndDeleteDir("out")
 
-os.system(f"SDL2/setup.sh")
+os.system(f"sh SDL2/setup.sh")
 
 editionList = ["-DEBUG", ""]
 extList = [".rpx", ".zip", ".wuhb"]
