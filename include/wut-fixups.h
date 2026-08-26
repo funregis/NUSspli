@@ -22,6 +22,7 @@
 #pragma once
 
 #pragma GCC diagnostic ignored "-Wundef"
+#include <coreinit/cache.h>
 #include <coreinit/core.h>
 #include <coreinit/memdefaultheap.h>
 #include <coreinit/memory.h>

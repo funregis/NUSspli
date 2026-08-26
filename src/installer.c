@@ -98,7 +98,7 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
     }
 
     startNewFrame();
-    char *toScreen = getToFrameBuffer();
+    char toScreen[256];
     strcpy(toScreen, localise("Installing"));
     strcat(toScreen, " ");
     strcat(toScreen, game);
@@ -132,8 +132,10 @@ bool install(const char *game, bool hasDeps, NUSDEV dev, const char *path, bool 
     }
 
     // No-intro
-    char *tmpPath = getStaticPathBuffer(1);
+    char tmpPath[FS_MAX_PATH];
     size_t s = strlen(path);
+    if(s + sizeof("title.tmd") >= sizeof(tmpPath))
+        return false;
     OSBlockMove(tmpPath, path, s, false);
     OSBlockMove(tmpPath + s, "title.tmd", sizeof("title.tmd"), false);
     NO_INTRO_DATA *noIntro;
