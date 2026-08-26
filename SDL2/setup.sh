@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 
 # Create folders (shouldn't be missing but just to be sure)
 mkdir -p /opt/devkitpro/portlibs/wiiu/lib/cmake

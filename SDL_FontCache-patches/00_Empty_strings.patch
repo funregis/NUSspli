@@ -1,4 +1,4 @@
-From 5eec0b20cf0e2cb7f15b9b7f9411b55fd1fe0125 Mon Sep 17 00:00:00 2001
+﻿From 5eec0b20cf0e2cb7f15b9b7f9411b55fd1fe0125 Mon Sep 17 00:00:00 2001
 From: MonzUn <daniel-bengtsson@live.com>
 Date: Fri, 16 Mar 2018 13:04:46 +0100
 Subject: [PATCH] FC_GetWidth and FC_HetHeight will now always return 0 when
