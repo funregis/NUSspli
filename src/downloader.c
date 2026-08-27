@@ -213,7 +213,7 @@ static void resetNetwork()
 {
     BOOL con;
     NNResult nnres = ACIsApplicationConnected(&con);
-    if(nnres.value != 0 || con)
+    if(nnres.value == 0 && con)
         return;
 
     void *ovl = addErrorOverlay(localise("Preparing. This might take some time. Please be patient."));
@@ -221,14 +221,13 @@ static void resetNetwork()
     // Disconnect from network
     deinitDownloader();
     restartUdpLog1();
-    socket_lib_finish();
     NNResult cr;
 
 closeAgain:
     nnres = ACClose();
     do
     {
-        cr = ACGetCloseStatus(nnres);
+        cr = ACGetCloseStatus();
         if(cr.value == -1) // FAILED
         {
             if(ovl)
@@ -244,14 +243,18 @@ closeAgain:
         }
     } while(cr.value != 0); // SUCCESS. A value of 1 means processing, so we're not handling it.
 
+    ACFinalize();
+    socket_lib_finish();
+
     // Connect to network
 reconnect:
+    socket_lib_init();
+    set_multicast_state(true);
+    ACInitialize();
+
     nnres = ACConnect();
     if(nnres.value == 0)
     {
-        socket_lib_init();
-        set_multicast_state(true);
-
         restartUdpLog2();
         initDownloader();
 
@@ -260,6 +263,9 @@ reconnect:
 
         return;
     }
+
+    ACFinalize();
+    socket_lib_finish();
 
     if(ovl)
         removeErrorOverlay(ovl);
@@ -271,6 +277,7 @@ reconnect:
     }
 
 exitApp:
+    restartUdpLog2();
     if(AppRunning(true))
         homeButtonCallback((void *)true);
 }
@@ -825,6 +832,7 @@ int downloadFile(const char *url, char *file, downloadData *data, FileType type,
                 break;
             case CURLE_BAD_FUNCTION_ARGUMENT: // Killed socket, see above
                 sprintf(toScreen, "%s:\n\t%s\n\n%s", localise("Internal WUT error"), te, "See https://github.com/V10lator/NUSspli/issues/302#issuecomment-2108134284");
+                deinitDownloader();
                 break;
             case CURLE_PEER_FAILED_VERIFICATION:
                 sprintf(toScreen, "%s:\n\t%s!\n\n%s", localise("SSL error"), te, localise("peer certificate verification failed, check your Wii Us date and time settings"));
@@ -848,6 +856,7 @@ int downloadFile(const char *url, char *file, downloadData *data, FileType type,
         if(showNetworkError(toScreen))
         {
             resetNetwork();
+            initDownloader();
             flushIOQueue(); // We flush here so the last file is completely on disc and closed before we retry.
             return downloadFile(url, file, data, type, resume, queueData, rambuf);
         }
