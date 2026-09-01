@@ -162,14 +162,17 @@ static bool showNetworkError(const char *err)
     char *p = NULL;
     if(autoResumeEnabled())
     {
-        os = 9 * 60; // 9 seconds with 60 FPS
-        frames = os;
+        frames = 9 * 60; // 9 seconds with 60 FPS
+        os = -1;
         strcat(toScreen, "\n\n");
         p = toScreen + strlen(toScreen);
         const char *pt = localise("Next try in _ seconds.");
         strcpy(p, pt);
         const char *n = strchr(pt, '_');
-        p += n - pt;
+        if(n != NULL)
+            p += n - pt;
+        else
+            p = NULL;
     }
     else
         drawErrorFrame(toScreen, B_RETURN | Y_RETRY);
@@ -185,10 +188,11 @@ static bool showNetworkError(const char *err)
 
         if(autoResumeEnabled())
         {
-            s = frames / 60;
+            s = (frames + 59) / 60;
             if(s != os)
             {
-                *p = '1' + s;
+                if(p != NULL)
+                    *p = '0' + s;
                 os = s;
                 drawErrorFrame(toScreen, B_RETURN | Y_RETRY);
             }
@@ -211,11 +215,6 @@ static bool showNetworkError(const char *err)
 // We're not using WUTs NNResult_IsSuccess() / NNResult_IsFailure() here as it's wrong
 static void resetNetwork()
 {
-    BOOL con;
-    NNResult nnres = ACIsApplicationConnected(&con);
-    if(nnres.value == 0 && con)
-        return;
-
     void *ovl = addErrorOverlay(localise("Preparing. This might take some time. Please be patient."));
 
     // Disconnect from network
@@ -224,11 +223,15 @@ static void resetNetwork()
     NNResult cr;
 
 closeAgain:
-    nnres = ACClose();
+    ACClose();
+    int timeout = 100;
     do
     {
         cr = ACGetCloseStatus();
-        if(cr.value == -1) // FAILED
+        if(cr.value == 0) // SUCCESS
+            break;
+
+        if(cr.value != 1 || --timeout <= 0) // Failed or timeout
         {
             if(ovl)
                 removeErrorOverlay(ovl);
@@ -236,12 +239,15 @@ closeAgain:
             if(showNetworkError(localise("Error closing network!")))
             {
                 ovl = addErrorOverlay(localise("Preparing. This might take some time. Please be patient."));
+                timeout = 100;
                 goto closeAgain;
             }
 
             goto exitApp;
         }
-    } while(cr.value != 0); // SUCCESS. A value of 1 means processing, so we're not handling it.
+
+        OSSleepTicks(OSMillisecondsToTicks(10));
+    } while(true);
 
     ACFinalize();
     socket_lib_finish();
@@ -252,7 +258,7 @@ reconnect:
     set_multicast_state(true);
     ACInitialize();
 
-    nnres = ACConnect();
+    NNResult nnres = ACConnect();
     if(nnres.value == 0)
     {
         restartUdpLog2();
@@ -856,7 +862,6 @@ int downloadFile(const char *url, char *file, downloadData *data, FileType type,
         if(showNetworkError(toScreen))
         {
             resetNetwork();
-            initDownloader();
             flushIOQueue(); // We flush here so the last file is completely on disc and closed before we retry.
             return downloadFile(url, file, data, type, resume, queueData, rambuf);
         }

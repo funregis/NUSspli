@@ -215,9 +215,6 @@ static void innerMain()
                     drawByeFrame();
                 }
 
-                if(cfwError == NULL)
-                    checkSpaceThread();
-
                 shutdownRenderer();
                 locCleanUp();
                 debugPrintf("SDL closed");
