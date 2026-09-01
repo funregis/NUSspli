@@ -167,6 +167,8 @@
     "Files might be corrupt": "Arquivos podem estar corrompidos",
     "Unknown Error": "Erro desconhecido",
     "Network error": "Erro de Internet",
+    "Error closing network!": "Erro ao fechar a rede!",
+    "Error connecting to network!": "Erro ao conectar à rede!",
     "check the network settings and try again": "Verifique as configurações de Internet e tente novamente",
     "check your DNS and network settings": "verifique suas configurações de DNS e rede",
     "check your internet connection and try again": "verifique sua conexão com a internet e tente novamente",

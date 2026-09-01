@@ -168,6 +168,8 @@
     "Unknown Error": "Erro desconhecido",
 
     "Network error": "Erro de rede",
+    "Error closing network!": "Erro ao fechar a rede!",
+    "Error connecting to network!": "Erro ao ligar à rede!",
     "check the network settings and try again": "Verifique as definições de Internet e tente novamente",
     "check your DNS and network settings": "verifique as suas definições de DNS e de rede",
     "check your internet connection and try again": "verifique a sua ligação à Internet e tente novamente",

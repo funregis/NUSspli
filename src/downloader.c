@@ -162,7 +162,7 @@ static bool showNetworkError(const char *err)
     char *p = NULL;
     if(autoResumeEnabled())
     {
-        frames = 9 * 60; // 9 seconds with 60 FPS
+        frames = 4 * 60; // 9 seconds with 60 FPS
         os = -1;
         strcat(toScreen, "\n\n");
         p = toScreen + strlen(toScreen);
@@ -239,8 +239,9 @@ closeAgain:
             if(showNetworkError(localise("Error closing network!")))
             {
                 ovl = addErrorOverlay(localise("Preparing. This might take some time. Please be patient."));
-                timeout = 100;
-                goto closeAgain;
+                ACFinalize();
+                socket_lib_finish();
+                goto reconnect;
             }
 
             goto exitApp;

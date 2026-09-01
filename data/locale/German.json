@@ -159,6 +159,8 @@
     "Unknown Error": "Unbekannter Fehler",
 
     "Network error": "Netzwerkfehler",
+    "Error closing network!": "Fehler beim Schließen des Netzwerks!",
+    "Error connecting to network!": "Fehler beim Verbinden mit dem Netzwerk!",
     "check the network settings and try again": "prüfe die Netzwerkeinstellungen und versuche es nochmal",
     "check your DNS and network settings": "Überprüfen Sie Ihre DNS- und Netzwerkeinstellungen",
     "check your internet connection and try again": "Überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut",

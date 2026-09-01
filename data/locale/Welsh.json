@@ -157,6 +157,8 @@
     "Unknown Error": "Gwall Anhysbys",
     
     "Network error": "Gwall rhwydwaith",
+    "Error closing network!": "Gwall wrth gau'r rhwydwaith!",
+    "Error connecting to network!": "Gwall wrth gysylltu â'r rhwydwaith!",
     "check the network settings and try again": "gwiriwch y gosodiadau rhwydwaith a rhowch gynnig arall arni",
     "check your DNS and network settings": "gwiriwch eich gosodiadau DNS a rhwydwaith",
     "check your internet connection and try again": "gwiriwch eich cysylltiad rhyngrwyd a rhowch gynnig arall arni",

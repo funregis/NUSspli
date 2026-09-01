@@ -162,6 +162,8 @@
     "Unknown Error": "Bilinmeyen Hata",
 
     "Network error": "Ağ hatası",
+    "Error closing network!": "Ağ kapatılırken hata oluştu!",
+    "Error connecting to network!": "Ağa bağlanırken hata oluştu!",
     "check the network settings and try again": "Ağ ayarlarını kontrol edin ve tekrar deneyin",
     "check your DNS and network settings": "DNS ve ağ ayarlarınızı kontrol edin",
     "check your internet connection and try again": "İnternet bağlantınızı kontrol edip tekrar deneyin",

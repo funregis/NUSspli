@@ -169,6 +169,8 @@
     "Unknown Error": "Error desconocido",
 
     "Network error": "Error de red",
+    "Error closing network!": "¡Error al cerrar la red!",
+    "Error connecting to network!": "¡Error al conectar con la red!",
     "check the network settings and try again": "comprueba la configuración de la red y vuelve a intentarlo",
     "SSL error": "Error de SSL",
     "check your Wii Us date and time settings": "comprueba los ajustes de fecha y hora de tu Wii U",
