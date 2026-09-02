@@ -2,87 +2,87 @@
 
 ## [2.1] — 2026-09-02
 
-Période : 26 août – 2 septembre 2026  
-Base : `99a03cb` → `73e7b87` (18 commits)
+Period: August 26 – September 2, 2026  
+Base: `99a03cb` → `73e7b87` (18 commits)
 
-### Version et identité
+### Version and identity
 
-- Version passée de **1.157-ALPHA2** à **2.1**
-- Copyright mis à jour : **© 2025-2030 Funregis**
-- **Funregis** ajouté aux crédits développeurs du menu principal
-- README mis à jour pour indiquer que ce fork est basé sur [NUSspli de V10lator](https://github.com/V10lator/NUSspli)
+- Version bumped from **1.157-ALPHA2** to **2.1**
+- Copyright updated to **© 2025-2030 Funregis**
+- **Funregis** added to the developer credits on the main menu
+- README updated to state that this fork is based on [NUSspli by V10lator](https://github.com/V10lator/NUSspli)
 
-### Réseau et téléchargements
+### Network and downloads
 
-#### Réinitialisation réseau (`resetNetwork`)
+#### Network reset (`resetNetwork`)
 
-- Suppression du retour anticipé qui empêchait parfois la réinitialisation
-- Correction de l'utilisation de `ACGetCloseStatus()` (codes 0 = succès, 1 = en cours)
-- Ajout d'un **timeout** avec attente active (polling toutes les 10 ms)
-- Cycle complet de déconnexion/reconnexion : `ACFinalize` → `socket_lib_finish` → `socket_lib_init` → `ACInitialize` → `ACConnect`
-- En cas d'erreur **« Error closing network! »**, réinitialisation forcée de la connexion au lieu de rappeler `ACClose()` en boucle
-- Nettoyage correct en cas d'échec de reconnexion
+- Removed early return that sometimes prevented network reset
+- Fixed `ACGetCloseStatus()` usage (code 0 = success, 1 = in progress)
+- Added a **timeout** with active polling (every 10 ms)
+- Full disconnect/reconnect cycle: `ACFinalize` → `socket_lib_finish` → `socket_lib_init` → `ACInitialize` → `ACConnect`
+- On **"Error closing network!"**, force a full connection reset instead of calling `ACClose()` in a loop
+- Proper cleanup on reconnect failure
 
 #### libCURL / sockets
 
-- Les options socket (WinScale, TCP SACK, etc.) ne font plus échouer le transfert si non supportées (`ENOPROTOOPT`)
-- Ajout de `CURLOPT_NOSIGNAL`, `CURLOPT_CONNECTTIMEOUT` (30 s) et `CURLOPT_MAXREDIRS`
-- Refactorisation de `initDownloader()` avec gestion d'erreurs simplifiée
-- **Nouvelle tentative sur connexion fermée** : `curlReuseConnection = false` après toute erreur pour forcer une nouvelle connexion
-- Ajout d'un bundle de certificats CA (`data/ca-certs.pem`)
+- Socket options (WinScale, TCP SACK, etc.) no longer fail the transfer when unsupported (`ENOPROTOOPT`)
+- Added `CURLOPT_NOSIGNAL`, `CURLOPT_CONNECTTIMEOUT` (30 s), and `CURLOPT_MAXREDIRS`
+- Refactored `initDownloader()` with simplified error handling
+- **Retry on closed connection**: `curlReuseConnection = false` after any error to force a fresh connection
+- Added a CA certificate bundle (`data/ca-certs.pem`)
 
-#### Messages d'erreur réseau
+#### Network error messages
 
-- Messages d'erreur **détaillés et contextualisés** selon le code curl (DNS, timeout, SSL, etc.)
-- Traduction des erreurs curl via `localise()`
-- Correction du compte à rebours de reprise automatique (affichage des secondes restantes)
-- Nouvelles traductions : `Error closing network!`, `Error connecting to network!`, et messages réseau associés
+- **Detailed, contextual error messages** based on the curl error code (DNS, timeout, SSL, etc.)
+- Curl errors translated via `localise()`
+- Fixed auto-resume countdown display (remaining seconds)
+- New translations: `Error closing network!`, `Error connecting to network!`, and related network messages
 
 ### Notifications
 
-- Rumble Wiimote et LED GamePad gérés dans le même thread de notification
-- La LED reste allumée **4 secondes** avant de s'éteindre
-- Le rumble Wiimote n'est activé que si la méthode rumble est sélectionnée
-- Le rumble GamePad reste géré séparément via `VPADControlMotor`
-- Extinction de la LED à la fermeture des notifications
+- Wiimote rumble and GamePad LED handled in the same notification thread
+- LED stays on for **4 seconds** before turning off
+- Wiimote rumble only enabled when the rumble notification method is selected
+- GamePad rumble still handled separately via `VPADControlMotor`
+- LED turned off when notifications are shut down
 
-### Stabilité et mémoire
+### Stability and memory
 
-- **Suppression des buffers statiques partagés** (`getStaticScreenBuffer`, `getStaticLineBuffer`, `getStaticPathBuffer`)
-- Remplacement par des buffers sur la pile dans tout le code (downloader, menus, renderer, etc.)
-- Corrections de troncature de texte dans le renderer (débordement de buffer, ellipsis)
-- Mise à jour importante de **SDL_FontCache**
+- **Removed shared static buffers** (`getStaticScreenBuffer`, `getStaticLineBuffer`, `getStaticPathBuffer`)
+- Replaced with stack buffers throughout the codebase (downloader, menus, renderer, etc.)
+- Fixed text truncation in the renderer (buffer overflow, ellipsis)
+- Major **SDL_FontCache** update
 
 ### Localisation
 
-- Ajout de nombreuses chaînes manquantes dans les **8 langues** (français, allemand, espagnol, italien, portugais, portugais brésilien, turc, gallois)
-- Erreurs réseau, SSL et sauvegarde de `title.tmd` / `title.tik` désormais traduites
+- Added many missing strings across **8 languages** (French, German, Spanish, Italian, Portuguese, Brazilian Portuguese, Turkish, Welsh)
+- Network, SSL, and `title.tmd` / `title.tik` save errors are now translated
 
 ### Build
 
-- **Makefile** : passage à `-O3`, `--gc-sections`, suppression du LTO/agressif `-Ofast`
-- **Dockerfile** : flags de compilation ajustés, bibliothèques statiques sans PIC
-- **build.py** : exécution de `SDL2/setup.sh` via `sh`, téléchargement des certificats sans vérification SSL
+- **Makefile**: switched to `-O3`, `--gc-sections`, removed aggressive `-Ofast`/LTO
+- **Dockerfile**: adjusted compile flags, static libraries built without PIC
+- **build.py**: run `SDL2/setup.sh` via `sh`, download certificates without SSL verification
 
 ### Commits
 
 | Date   | Commit    | Description                                      |
 |--------|-----------|--------------------------------------------------|
-| 26/08  | `4ca67c5` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `a721f40` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `e7d7d81` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `1ca4957` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `7876223` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `3be7668` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `c9ea831` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `6e5b7cf` | Optimisations, corrections, fiabilisations       |
-| 26/08  | `80c8025` | Mise à jour README                               |
-| 26/08  | `c571ca0` | Amélioration des notifications                   |
-| 26/08  | `f7d41e1` | Mise à jour build                                |
-| 26/08  | `586d87f` | Mise à jour version → 2.1                        |
-| 26/08  | `cc2be0b` | Localisation, optimisations, corrections         |
-| 27/08  | `7019cd8` | Meilleure gestion réseau (sockets, reset)        |
-| 27/08  | `c3e04fa` | Meilleure gestion réseau                         |
-| 01/09  | `3a5e822` | Meilleure gestion réseau (AC API, timeout)       |
-| 01/09  | `701d7ab` | Retry sur connexion fermée + certificats CA      |
-| 02/09  | `73e7b87` | Ajout Funregis aux crédits                       |
+| 08/26  | `4ca67c5` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `a721f40` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `e7d7d81` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `1ca4957` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `7876223` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `3be7668` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `c9ea831` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `6e5b7cf` | Optimisations, fixes, reliability improvements   |
+| 08/26  | `80c8025` | README update                                    |
+| 08/26  | `c571ca0` | Better notifications                             |
+| 08/26  | `f7d41e1` | Build update                                     |
+| 08/26  | `586d87f` | Version update → 2.1                             |
+| 08/26  | `cc2be0b` | Localisation, optimisations, fixes               |
+| 08/27  | `7019cd8` | Better network handling (sockets, reset)         |
+| 08/27  | `c3e04fa` | Better network handling                          |
+| 09/01  | `3a5e822` | Better network handling (AC API, timeout)        |
+| 09/01  | `701d7ab` | Retry on closed connection + CA certificates     |
+| 09/02  | `73e7b87` | Add Funregis to developer credits                |
