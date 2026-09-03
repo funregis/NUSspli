@@ -52,6 +52,7 @@ static bool addToOpQueue(const TitleEntry *entry, const char *dir, const TMD *tm
     titleInfo->rambuf = NULL;
     titleInfo->operation = OPERATION_INSTALL;
     titleInfo->entry = entry;
+    titleInfo->installedTitle = NULL;
     strcpy(titleInfo->folderName, dir);
     titleInfo->dlDev = fromDev;
     titleInfo->toUSB = toUSB;

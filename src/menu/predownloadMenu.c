@@ -353,6 +353,7 @@ static bool addToOpQueue(RAMBUF *rambuf, const TitleEntry *entry, const char *ti
         titleInfo->tmdSize = rambuf->size;
         titleInfo->rambuf = rambuf;
         titleInfo->entry = entry;
+        titleInfo->installedTitle = NULL;
         strcpy(titleInfo->titleVer, titleVer);
         strcpy(titleInfo->folderName, folderName);
         titleInfo->operation = operation;

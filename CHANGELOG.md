@@ -1,4 +1,13 @@
 # Changelog
+## [2.2] — 2026-09-03
+
+### Queues and uninstallation
+
+- Added a shared queue operation for uninstalling installed titles
+- Press `-` in the installed-title browser to add a title to the uninstall queue
+- Press `X` there to open the queue and review pending operations
+- Press `+` in the queue to process installations, downloads, and uninstallations sequentially
+- Stored independent MCP title data for queued uninstallations to keep them valid after leaving the browser
 
 ## [2.1] — 2026-09-02
 
